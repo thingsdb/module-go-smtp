@@ -63,6 +63,8 @@ mail = {
 
 // At least one to address is required
 to = ['alice@foo.bar'];
+
+// Send the email
 smtp.send_mail(to, mail).else(|err| {
     err;  // some error has occurred
 })

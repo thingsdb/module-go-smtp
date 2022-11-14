@@ -89,6 +89,8 @@ func onModuleReq(pkg *timod.Pkg) {
 		return
 	}
 
+	log.Printf("To: %v Mail: %v", req.To, req.Mail)
+
 	email := mailyak.New(conn.Host, conn.Auth)
 	if req.To != nil && len(req.To) > 0 {
 		email.To(req.To...)
