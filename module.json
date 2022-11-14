@@ -1,0 +1,24 @@
+{
+    "doc": "https://github.com/thingsdb/module-go-smtp#readme",
+    "version": "0.1.0",
+    "main": {
+        "linux/386": "bin/smtp_linux_386.bin",
+        "linux/amd64": "bin/smtp_linux_amd64.bin",
+        "linux/arm": "bin/smtp_linux_arm.bin",
+        "linux/arm64": "bin/smtp_linux_arm64.bin",
+        "freebsd/386": "bin/smtp_freebsd_386.bin",
+        "freebsd/amd64": "bin/smtp_freebsd_amd64.bin",
+        "freebsd/arm": "bin/smtp_freebsd_arm.bin",
+        "freebsd/arm64": "bin/smtp_freebsd_arm64.bin",
+        "darwin/amd64": "bin/smtp_darwin_amd64.bin"
+    },
+    "exposes": {
+        "send_mail": {
+            "doc": "Send email",
+            "defaults": {
+                "deep": 1,
+                "load": true
+            }
+        }
+    }
+}
