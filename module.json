@@ -18,7 +18,8 @@
             "defaults": {
                 "deep": 1,
                 "load": true
-            }
+            },
+            "argmap": ["to", "mailobj"]
         }
     }
 }

@@ -46,16 +46,20 @@ type connSMTP struct {
 	Auth smtp.Auth
 }
 
-type mailRequest struct {
-	Bcc      []string `msgpack:bcc`
-	Cc       []string `msgpack:cc`
-	From     *string  `msgpack:from`
-	FromName *string  `msgpack:from_name`
-	HTML     *string  `msgpack:html`
-	Plain    *string  `msgpack:plain`
-	Replyto  *string  `msgpack:reply_to`
-	Subject  *string  `msgpack:subject`
-	To       []string `msgpack:"to"`
+type mailObj struct {
+	Bcc      []string `msgpack:"bcc"`
+	Cc       []string `msgpack:"cc"`
+	From     *string  `msgpack:"from"`
+	FromName *string  `msgpack:"from_name"`
+	HTML     *string  `msgpack:"html"`
+	Plain    *string  `msgpack:"plain"`
+	Replyto  *string  `msgpack:"reply_to"`
+	Subject  *string  `msgpack:"subject"`
+}
+
+type mailReq struct {
+	To   []string `msgpack:"to"`
+	Mail *mailObj `msgpack:"mailobj"`
 }
 
 func handleConf(conf *confSMTP) error {
@@ -75,7 +79,7 @@ func handleConf(conf *confSMTP) error {
 }
 
 func onModuleReq(pkg *timod.Pkg) {
-	var req mailRequest
+	var req mailReq
 	err := msgpack.Unmarshal(pkg.Data, &req)
 	if err != nil {
 		timod.WriteEx(
@@ -86,8 +90,60 @@ func onModuleReq(pkg *timod.Pkg) {
 	}
 
 	email := mailyak.New(conn.Host, conn.Auth)
-	if req.Bcc != nil {
-		email.Bcc(req.Bcc...)
+	if req.To != nil && len(req.To) > 0 {
+		email.To(req.To...)
+	} else {
+		timod.WriteEx(
+			pkg.Pid,
+			timod.ExBadData,
+			"At least one `to` address is required")
+		return
+	}
+
+	if req.Mail == nil {
+		timod.WriteEx(
+			pkg.Pid,
+			timod.ExBadData,
+			"A mail object is required")
+		return
+	}
+
+	if req.Mail.Subject != nil {
+		email.Subject(*req.Mail.Subject)
+	} else {
+		timod.WriteEx(
+			pkg.Pid,
+			timod.ExBadData,
+			"Mail subject is missing")
+		return
+	}
+
+	if req.Mail.Bcc != nil {
+		email.Bcc(req.Mail.Bcc...)
+	}
+
+	if req.Mail.Cc != nil {
+		email.Cc(req.Mail.Cc...)
+	}
+
+	if req.Mail.Replyto != nil {
+		email.ReplyTo(*req.Mail.Replyto)
+	}
+
+	if req.Mail.From != nil {
+		email.From(*req.Mail.From)
+	}
+
+	if req.Mail.FromName != nil {
+		email.FromName(*req.Mail.FromName)
+	}
+
+	if req.Mail.Plain != nil {
+		email.Plain().Set(*req.Mail.Plain)
+	}
+
+	if req.Mail.HTML != nil {
+		email.HTML().Set(*req.Mail.HTML)
 	}
 
 	if err := email.Send(); err != nil {
