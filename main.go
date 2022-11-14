@@ -12,11 +12,13 @@
 //     });
 //
 //     // Use the module
-//     smptp.send_mail("mychannel", {
-//         title: "my title"
-//     }).then(|sid| {
-//         sid;  // the sid of the new ticket
-//     });
+//     smptp.send_mail(["alice@foo.bar"], {
+//         from: "bob@foo.bar",
+//         subject: "my subject",
+//         plain: "my body",
+//     }).else(|err| {
+//         // error handling....
+//     }));
 //
 package main
 
@@ -47,6 +49,7 @@ type connSMTP struct {
 }
 
 type mailObj struct {
+	Id       *string  `msgpack:"id"`
 	Bcc      []string `msgpack:"bcc"`
 	Cc       []string `msgpack:"cc"`
 	From     *string  `msgpack:"from"`
@@ -154,7 +157,7 @@ func onModuleReq(pkg *timod.Pkg) {
 		return
 	}
 
-	timod.WriteResponse(pkg.Pid, nil)
+	timod.WriteResponse(pkg.Pid, req.Mail.Id)
 }
 
 func handler(buf *timod.Buffer, quit chan bool) {
