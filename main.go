@@ -49,7 +49,6 @@ type connSMTP struct {
 }
 
 type mailObj struct {
-	Id       *string  `msgpack:"id"`
 	Bcc      []string `msgpack:"bcc"`
 	Cc       []string `msgpack:"cc"`
 	From     *string  `msgpack:"from"`
@@ -157,7 +156,7 @@ func onModuleReq(pkg *timod.Pkg) {
 		return
 	}
 
-	timod.WriteResponse(pkg.Pid, req.Mail.Id)
+	timod.WriteResponse(pkg.Pid, nil)
 }
 
 func handler(buf *timod.Buffer, quit chan bool) {
