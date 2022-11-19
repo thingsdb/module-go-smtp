@@ -29,7 +29,7 @@ import (
 	"strings"
 	"sync"
 
-	mailyak "github.com/domodwyer/mailyak/v3"
+	mailyak "github.com/cesbit/mailyak/v3"
 	timod "github.com/thingsdb/go-timod"
 
 	"github.com/vmihailenco/msgpack"
