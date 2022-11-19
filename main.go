@@ -94,12 +94,6 @@ func onModuleReq(pkg *timod.Pkg) {
 	email := mailyak.New(conn.Host, conn.Auth)
 	if req.To != nil && len(req.To) > 0 {
 		email.To(req.To...)
-	} else {
-		timod.WriteEx(
-			pkg.Pid,
-			timod.ExBadData,
-			"At least one `to` address is required")
-		return
 	}
 
 	if req.Mail == nil {
