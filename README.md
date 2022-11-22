@@ -61,7 +61,6 @@ mail = {
     subject: 'my subject',
 };
 
-// At least one to address is required
 to = ['alice@foo.bar'];
 
 // Send the email
